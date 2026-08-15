@@ -14,8 +14,8 @@ import numpy as np
 import streamlit as st
 import tensorflow as tf
 from tensorflow.keras.models import Model
-import cv2
 from PIL import Image
+import matplotlib.cm as cm
 
 # ----------------------------- CONFIG -----------------------------
 IMG_SIZE = (224, 224)
@@ -85,13 +85,18 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name):
 
 
 def overlay_gradcam(pil_img, heatmap, alpha=0.4):
-    img = np.array(pil_img.convert("RGB"))
-    img = cv2.resize(img, IMG_SIZE)
-    heatmap_resized = cv2.resize(heatmap, IMG_SIZE)
-    heatmap_uint8 = np.uint8(255 * heatmap_resized)
-    heatmap_colored = cv2.applyColorMap(heatmap_uint8, cv2.COLORMAP_JET)
-    heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
-    overlayed = cv2.addWeighted(img, 1 - alpha, heatmap_colored, alpha, 0)
+    img = pil_img.convert("RGB").resize(IMG_SIZE)
+    img_arr = np.array(img).astype(np.float32)
+
+    # resize heatmap (small grid, e.g. 7x7) up to IMG_SIZE using PIL
+    heatmap_img = Image.fromarray(np.uint8(255 * heatmap)).resize(IMG_SIZE, resample=Image.BILINEAR)
+    heatmap_resized = np.array(heatmap_img).astype(np.float32) / 255.0
+
+    # apply a jet-like colormap via matplotlib
+    jet = cm.get_cmap("jet")
+    heatmap_colored = jet(heatmap_resized)[:, :, :3] * 255.0  # drop alpha channel
+
+    overlayed = (img_arr * (1 - alpha) + heatmap_colored * alpha).astype(np.uint8)
     return overlayed
 
 
@@ -148,7 +153,7 @@ if uploaded_file is not None:
         "Do not use for real medical decisions — always consult a radiologist/doctor."
     )
 else:
-    st.info("Upload an X-ray image to get a prediction.")
+    st.info(" Upload an X-ray image to get a prediction.")
 
 st.divider()
 st.caption("Thesis project: Explainable Deep Learning Framework for Pneumonia Detection "
