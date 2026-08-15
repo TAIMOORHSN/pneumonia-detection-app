@@ -15,7 +15,7 @@ import streamlit as st
 import tensorflow as tf
 from tensorflow.keras.models import Model
 from PIL import Image
-import matplotlib.cm as cm
+import matplotlib
 
 # ----------------------------- CONFIG -----------------------------
 IMG_SIZE = (224, 224)
@@ -93,7 +93,7 @@ def overlay_gradcam(pil_img, heatmap, alpha=0.4):
     heatmap_resized = np.array(heatmap_img).astype(np.float32) / 255.0
 
     # apply a jet-like colormap via matplotlib
-    jet = cm.get_cmap("jet")
+    jet = matplotlib.colormaps["jet"]
     heatmap_colored = jet(heatmap_resized)[:, :, :3] * 255.0  # drop alpha channel
 
     overlayed = (img_arr * (1 - alpha) + heatmap_colored * alpha).astype(np.uint8)
@@ -153,7 +153,7 @@ if uploaded_file is not None:
         "Do not use for real medical decisions — always consult a radiologist/doctor."
     )
 else:
-    st.info(" Upload an X-ray image to get a prediction.")
+    st.info("Upload an X-ray image to get a prediction.")
 
 st.divider()
 st.caption("Thesis project: Explainable Deep Learning Framework for Pneumonia Detection "
