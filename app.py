@@ -107,7 +107,7 @@ def preprocess_image(pil_img):
 
 
 # ------------------------------- UI ---------------------------------
-st.title("🫁 Pneumonia Detection from Chest X-Rays")
+st.title("Pneumonia Detection from Chest X-Rays")
 st.caption("Transfer Learning (VGG16, fine-tuned) + Grad-CAM Explainability")
 
 st.markdown(
