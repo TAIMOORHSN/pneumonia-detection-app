@@ -156,5 +156,5 @@ else:
     st.info("Upload an X-ray image to get a prediction.")
 
 st.divider()
-st.caption("Thesis project: Explainable Deep Learning Framework for Pneumonia Detection "
+st.caption("This project: Explainable Deep Learning Framework for Pneumonia Detection "
            "using Transfer Learning and Grad-CAM Visualization.")
