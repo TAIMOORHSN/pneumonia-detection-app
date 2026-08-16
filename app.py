@@ -149,8 +149,8 @@ if uploaded_file is not None:
     st.progress(min(max(confidence, 0.0), 1.0))
 
     st.warning(
-        "This is a research/thesis demo tool, not a certified diagnostic device. "
-        "Do not use for real medical decisions — always consult a radiologist/doctor."
+        "This is a project is a demo tool, not a certified diagnostic device. "
+        "Do not use for real medical decisions — always consult a radiologist or a doctor."
     )
 else:
     st.info("Upload an X-ray image to get a prediction.")
